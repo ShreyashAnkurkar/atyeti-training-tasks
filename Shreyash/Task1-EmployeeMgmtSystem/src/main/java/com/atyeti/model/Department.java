@@ -9,11 +9,14 @@ public class Department {
     private String managerName;
     private int employeeCount;
 
+    {
+        employeeCount++;
+    }
     public Department(int deptId, String deptName, String managerName) {
         this.deptId = deptId;
         this.deptName = deptName;
         this.managerName = managerName;
-        employeeCount++;
+
     }
 
     public int getDeptId() {
