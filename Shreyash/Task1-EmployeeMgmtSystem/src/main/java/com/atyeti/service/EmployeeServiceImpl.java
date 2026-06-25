@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class EmployeeServiceImpl implements IEmployeeService{
 
-    private  final Set<Employee> empData=new LinkedHashSet<>();
+    private  final List<Employee> empData=new ArrayList<>();
     @Override
     public boolean addEmployee(Employee e) {
         return empData.add(e);
@@ -21,9 +21,8 @@ public class EmployeeServiceImpl implements IEmployeeService{
 
         Employee emp=searchEmployeeById(id);
         emp.setName(e.getName());
-        emp.setId(emp.getId());
-        emp.setAddress(emp.getAddress());
-        emp.setDept(emp.getDept());
+        emp.setAddress(e.getAddress());
+        emp.setDept(e.getDept());
 
         return true;
 
@@ -42,6 +41,6 @@ public class EmployeeServiceImpl implements IEmployeeService{
 
     @Override
     public List<Employee> displayAllEmployees() {
-        return new ArrayList<>(empData);
+        return empData;
     }
 }
