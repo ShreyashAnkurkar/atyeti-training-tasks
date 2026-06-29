@@ -23,7 +23,8 @@ public class Department extends EntityAudit {
     private String departmentName;
 
 
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "department",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE} , fetch = FetchType.LAZY)
     private List<Employee> employee;
 
 

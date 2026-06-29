@@ -25,15 +25,7 @@ public class EmployeeController {
     @PostMapping("insertEmployee")
     public ResponseEntity<String> addEmployee(@RequestBody EmployeeRequest er) {
 
-        Employee employee = Employee.builder()
-                .empName(er.getEmpName())
-                .address(er.getAddress())
-                .deptName(er.getDeptName())
-                .emailId(er.getEmailId())
-                .phoneNo(er.getPhoneNo())
-                .build();
-
-        return new ResponseEntity<>(es.addEmployee(employee), HttpStatus.CREATED);
+        return new ResponseEntity<>(es.addEmployee(er), HttpStatus.CREATED);
     }
 
     @PutMapping("/modifyEmployee/{id}")
@@ -51,52 +43,12 @@ public class EmployeeController {
 
     @GetMapping("/getallEmployee")
     public ResponseEntity<List<EmployeeResponse>> getAllEmployees() {
+        return new ResponseEntity<>(es.getAllEmployees(), HttpStatus.OK);
 
-        List<Employee> emp = es.getAllEmployees();
-        List<EmployeeResponse> list = new ArrayList<>();
-
-        for (Employee e : emp) {
-            EmployeeResponse res = EmployeeResponse.builder()
-                    .id(e.getId())
-                    .empName(e.getEmpName())
-                    .address(e.getAddress())
-                    .phoneNo(e.getPhoneNo())
-                    .emailId(e.getEmailId())
-                    .deptName(e.getDeptName())
-                    .department(
-                            DepartmentResponse.builder()
-                                    .dept_id(e.getDepartment().getDeptId())
-                                    .dept_name(e.getDepartment().getDepartmentName())
-                                    .build()
-                    )
-                    .build();
-
-            list.add(res);
-        }
-
-        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/searchEmployeeById/{id}")
     public ResponseEntity<EmployeeResponse> getEmployeeById(@PathVariable int id) {
-
-        Employee e = es.searchEmpById(id);
-
-        EmployeeResponse res = EmployeeResponse.builder()
-                .id(e.getId())
-                .empName(e.getEmpName())
-                .address(e.getAddress())
-                .phoneNo(e.getPhoneNo())
-                .emailId(e.getEmailId())
-                .deptName(e.getDeptName())
-                .department(
-                        DepartmentResponse.builder()
-                                .dept_id(e.getDepartment().getDeptId())
-                                .dept_name(e.getDepartment().getDepartmentName())
-                                .build()
-                )
-                .build();
-
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return new ResponseEntity<>(es.searchEmpById(id), HttpStatus.OK);
     }
 }

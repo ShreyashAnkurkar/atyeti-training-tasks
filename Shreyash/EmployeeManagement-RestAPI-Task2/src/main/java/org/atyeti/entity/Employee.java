@@ -26,8 +26,6 @@ public class Employee extends EntityAudit {
     @Column(nullable = false,unique = true)
     private Long phoneNo;
 
-    @Column(nullable = false)
-    private String deptName;
 
     @Email( message ="Invalid Email Formate")
     @Column(nullable = false,unique = true)

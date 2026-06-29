@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface IEmployeeService {
 
-    public String addEmployee(Employee e);
+    public String addEmployee(EmployeeRequest e);
 
     public String updateEmployee(int id,EmployeeRequest e)throws EmployeeNotFoundException, InvalidInputException;
 
     public String deleteEmployee(int id)throws InvalidInputException;
 
-    public List<Employee> getAllEmployees();
+    public List<EmployeeResponse> getAllEmployees();
 
-    public Employee searchEmpById(int id)throws InvalidInputException,EmployeeNotFoundException;
+    public EmployeeResponse searchEmpById(int id)throws InvalidInputException,EmployeeNotFoundException;
 }

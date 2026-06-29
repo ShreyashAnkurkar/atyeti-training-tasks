@@ -1,6 +1,7 @@
 package org.atyeti.service.impl;
 
 import org.atyeti.dto.request.EmployeeRequest;
+import org.atyeti.dto.response.DepartmentResponse;
 import org.atyeti.dto.response.EmployeeResponse;
 import org.atyeti.entity.Department;
 import org.atyeti.entity.Employee;
@@ -13,13 +14,14 @@ import org.atyeti.repository.IEmployeeRepo;
 import org.atyeti.service.IEmployeeService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class EmployeeServiceImpl implements IEmployeeService {
 
-    private IEmployeeRepo repo;
-    private IDepartmentRepo dr;
+    private final IEmployeeRepo repo;
+    private final IDepartmentRepo dr;
 
 
     EmployeeServiceImpl(IEmployeeRepo e,IDepartmentRepo r){
@@ -29,7 +31,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
 
     @Override
-    public String addEmployee(Employee e) {
+    public String addEmployee(EmployeeRequest e) {
         if(repo.existsByEmailId(e.getEmailId())) throw new DuplicateRecordException("Employee already exists in DB");
 
         Department dept=dr.findByDepartmentName(e.getDeptName());
@@ -41,7 +43,6 @@ public class EmployeeServiceImpl implements IEmployeeService {
                .address(e.getAddress())
                .emailId(e.getEmailId())
                .phoneNo(e.getPhoneNo())
-               .deptName(e.getDeptName())
                .department(dept)
                .build();
         return "Employee added with id"+repo.save(employee).getId();
@@ -56,7 +57,6 @@ public class EmployeeServiceImpl implements IEmployeeService {
         employee.setEmpName(e.getEmpName());
         employee.setAddress(e.getAddress());
         employee.setPhoneNo(e.getPhoneNo());
-        employee.setDeptName(e.getDeptName());
         employee.setEmailId(e.getEmailId());
         employee.setDepartment(dept);
 
@@ -75,14 +75,59 @@ public class EmployeeServiceImpl implements IEmployeeService {
     }
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return repo.findAll();
+    public List<EmployeeResponse> getAllEmployees() {
+        List<Employee> emp = repo.findAll();
+        List<EmployeeResponse> list = new ArrayList<>();
+
+        for (Employee e : emp) {
+            DepartmentResponse departmentResponse = null;
+
+            if (e.getDepartment() != null) {
+                departmentResponse = DepartmentResponse.builder()
+                        .dept_id(e.getDepartment().getDeptId())
+                        .dept_name(e.getDepartment().getDepartmentName())
+                        .build();
+            }
+            EmployeeResponse res = EmployeeResponse.builder()
+                    .id(e.getId())
+                    .empName(e.getEmpName())
+                    .address(e.getAddress())
+                    .phoneNo(e.getPhoneNo())
+                    .emailId(e.getEmailId())
+                    .department(departmentResponse)
+                    .build();
+            list.add(res);
+        }
+        return list;
     }
 
     @Override
-    public Employee searchEmpById(int id) throws InvalidInputException, EmployeeNotFoundException {
-        if(id<=0) throw new InvalidInputException("Id must be greater than 0");
+    public EmployeeResponse searchEmpById(int id) throws InvalidInputException, EmployeeNotFoundException {
 
-        return repo.findById(id).orElseThrow(()->new EmployeeNotFoundException("Employee not exist in DB"));
+        if (id <= 0) {
+            throw new InvalidInputException("Id must be greater than 0");
+        }
+
+        Employee employee = repo.findById(id)
+                .orElseThrow(() ->
+                        new EmployeeNotFoundException("Employee not exist in DB"));
+
+        DepartmentResponse departmentResponse = null;
+
+        if (employee.getDepartment() != null) {
+            departmentResponse = DepartmentResponse.builder()
+                    .dept_id(employee.getDepartment().getDeptId())
+                    .dept_name(employee.getDepartment().getDepartmentName())
+                    .build();
+        }
+
+        return EmployeeResponse.builder()
+                .id(employee.getId())
+                .empName(employee.getEmpName())
+                .address(employee.getAddress())
+                .phoneNo(employee.getPhoneNo())
+                .emailId(employee.getEmailId())
+                .department(departmentResponse)
+                .build();
     }
 }

@@ -21,6 +21,5 @@ public class EmployeeRequest {
     private Long phoneNo;
     @Email(message = "Invalid Email Formate")
     private String emailId;
-    @Column(nullable = false)
     private String deptName;
 }
